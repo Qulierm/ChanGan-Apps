@@ -41,18 +41,22 @@ namespace ChanGan
         /// </summary>
         private void InitializeComponent()
         {
-            checkDeviceTimer = new System.Windows.Forms.Timer();
-            checkDeviceTimer.Interval = 3000; // Интервал в миллисекундах (здесь 5000 мс = 5 секунд)
-            checkDeviceTimer.Tick += CheckForWord;
-            checkDeviceTimer.Start();
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            this.checkDeviceTimer = new System.Windows.Forms.Timer(this.components);
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
+            // 
+            // checkDeviceTimer
+            // 
+            this.checkDeviceTimer.Enabled = true;
+            this.checkDeviceTimer.Interval = 4000;
             // 
             // label1
             // 
@@ -70,7 +74,7 @@ namespace ChanGan
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F);
-            this.label2.Location = new System.Drawing.Point(709, 12);
+            this.label2.Location = new System.Drawing.Point(519, 12);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(176, 32);
             this.label2.TabIndex = 7;
@@ -79,8 +83,8 @@ namespace ChanGan
             // 
             // button1
             // 
-            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button1.BackColor = System.Drawing.Color.Red;
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button1.ForeColor = System.Drawing.Color.White;
             this.button1.Location = new System.Drawing.Point(12, 12);
             this.button1.Name = "button1";
@@ -92,8 +96,8 @@ namespace ChanGan
             // 
             // button2
             // 
-            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button2.BackColor = System.Drawing.Color.Red;
+            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button2.ForeColor = System.Drawing.Color.White;
             this.button2.Location = new System.Drawing.Point(12, 93);
             this.button2.Name = "button2";
@@ -105,8 +109,8 @@ namespace ChanGan
             // 
             // button3
             // 
-            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button3.BackColor = System.Drawing.Color.Red;
+            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button3.ForeColor = System.Drawing.Color.White;
             this.button3.Location = new System.Drawing.Point(12, 174);
             this.button3.Name = "button3";
@@ -118,18 +122,31 @@ namespace ChanGan
             // 
             // richTextBox1
             // 
-            this.richTextBox1.Location = new System.Drawing.Point(12, 255);
+            this.richTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.richTextBox1.Location = new System.Drawing.Point(11, 284);
             this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.ReadOnly = true;
             this.richTextBox1.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.richTextBox1.Size = new System.Drawing.Size(471, 440);
+            this.richTextBox1.Size = new System.Drawing.Size(471, 411);
             this.richTextBox1.TabIndex = 12;
             this.richTextBox1.Text = "";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.label3.Location = new System.Drawing.Point(200, 252);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(74, 29);
+            this.label3.TabIndex = 13;
+            this.label3.Text = "Логи:";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1137, 707);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.richTextBox1);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
@@ -144,10 +161,48 @@ namespace ChanGan
             this.PerformLayout();
 
         }
-        private async void button3_Click(object sender, EventArgs e)
+        private async void button1_Click_1(object sender, EventArgs e)
+        {
+            string adbFolderPath = @"C:\adb";
+            string adbCommand = "start adb_run.exe";
+
+            // Создаем процесс для выполнения команды
+            Process process = new Process();
+            process.StartInfo.FileName = "cmd.exe";
+            process.StartInfo.WorkingDirectory = adbFolderPath;
+            process.StartInfo.Arguments = $"/c {adbCommand}";
+            process.StartInfo.UseShellExecute = false;  // Не использовать оболочку
+            process.StartInfo.RedirectStandardOutput = true;  // Перенаправить вывод стандартного потока
+
+            // Запускаем процесс
+            process.Start();
+        }
+        private async void button2_Click(object sender, EventArgs e)
         {
             await RunCommandAsync("devices");
         }
+        private async void button3_Click(object sender, EventArgs e)
+{
+    try
+    {
+        // Команды adb для выполнения
+        await RunCommandAsync("root");
+        await RunCommandAsync("remount");
+        await RunCommandAsync("push filemanagerplus.apk /data/local/tmp");
+        await RunCommandAsync("shell pm install /data/local/tmp/filemanagerplus.apk < password.txt");
+        await RunCommandAsync("shell pm grant com.alphainventor.filemanager android.permission.WRITE_EXTERNAL_STORAGE < password.txt");
+        await RunCommandAsync("shell appops set com.alphainventor.filemanager REQUEST_INSTALL_PACKAGES allow < password.txt");
+        await RunCommandAsync("shell rm -rf /data/data/com.iflytek.autofly.launcher/cache/* < password.txt");
+
+        // Показываем уведомление об успешной установке
+        MessageBox.Show("Установка файлового менеджера 'Файловый менеджер +' завершена!", "Уведомление", MessageBoxButtons.OK, MessageBoxIcon.Information);
+    }
+    catch (Exception ex)
+    {
+        MessageBox.Show($"Ошибка при выполнении команды ADB: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+    }
+}
+
 
         private async Task RunCommandAsync(string command)
         {
@@ -160,17 +215,31 @@ namespace ChanGan
                 processInfo.FileName = @"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe";
                 processInfo.Arguments = $"-NoLogo -NoProfile -Command \"cd '{adbDirectory}'; .\\adb.exe {fullCommand}\"";
                 processInfo.RedirectStandardOutput = true;
+                processInfo.RedirectStandardError = true;
                 processInfo.UseShellExecute = false;
                 processInfo.CreateNoWindow = true;
 
                 using (Process process = new Process())
                 {
                     process.StartInfo = processInfo;
-                    process.OutputDataReceived += (sender, args) => AppendText(args.Data + Environment.NewLine);
 
+                    // Запускаем процесс и собираем вывод
                     process.Start();
-                    process.BeginOutputReadLine();
-                    await Task.Run(() => process.WaitForExit());
+                    string output = process.StandardOutput.ReadToEnd();
+                    string error = process.StandardError.ReadToEnd();
+
+                    // Ждем завершения процесса
+                    await Task.Run(() =>
+                    {
+                        process.WaitForExit();
+                    });
+
+                    // Добавляем вывод и ошибки в TextBox
+                    AppendText("Output:" + Environment.NewLine + output + Environment.NewLine);
+                    if (!string.IsNullOrEmpty(error))
+                    {
+                        AppendText("Error:" + Environment.NewLine + error + Environment.NewLine);
+                    }
                 }
             }
             catch (Exception ex)
@@ -178,6 +247,8 @@ namespace ChanGan
                 AppendText("Error: " + ex.Message + Environment.NewLine);
             }
         }
+
+
 
         private void CheckForWord(object sender, EventArgs e)
         {
@@ -207,20 +278,22 @@ namespace ChanGan
                     if (containsOnlyDevice && !notificationShown)
                     {
                         // Показываем всплывающее окно с сообщением
-                        MessageBox.Show("Слово 'device' обнаружено", "Уведомление", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show("Соединенние с ГУ успешно установленно, можно переходить к следующему этапу", "Уведомление", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                         // Останавливаем таймер, чтобы всплывающее окно не появлялось снова
                         checkDeviceTimer.Stop();
 
                         // Устанавливаем флаг, что всплывающее окно было показано
                         notificationShown = true;
-                        break; // Выходим из цикла, чтобы проверять только первую строку с "device"
+                        return; // Завершаем метод, чтобы не продолжать поиск
                     }
                 }
             }
         }
 
-        private void AppendText(string text)
+    
+
+    private void AppendText(string text)
         {
             if (richTextBox1.InvokeRequired)
             {
@@ -242,6 +315,7 @@ namespace ChanGan
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
         private RichTextBox richTextBox1;
+        private Label label3;
     }
 }
 
